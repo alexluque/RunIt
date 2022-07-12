@@ -19,7 +19,7 @@ class DataController: ObservableObject {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
         
-        container.loadPersistentStores { storeDescription, error in
+        container.loadPersistentStores { _, error in
             if let error = error {
                 fatalError("Fatal error loading store: \(error.localizedDescription)")
             }
@@ -67,8 +67,6 @@ class DataController: ObservableObject {
                 run.lastRanStep = nil
             }
         }
-        
-        // TODO add some badges
         
         try viewContext.save()
     }
