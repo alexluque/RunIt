@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="EarnedBadge" representedClassName="EarnedBadge" syncable="YES" codeGenerationType="class">
-        <attribute name="badgeName" optional="YES" attributeType="String"/>
-        <attribute name="earnDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-    </entity>
     <entity name="Run" representedClassName="Run" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="length" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -24,9 +20,8 @@
         <relationship name="steps" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Step" inverseName="tasks" inverseEntity="Step"/>
     </entity>
     <elements>
+        <element name="Run" positionX="-63" positionY="27" width="128" height="89"/>
         <element name="Step" positionX="-63" positionY="-18" width="128" height="89"/>
         <element name="Task" positionX="-54" positionY="9" width="128" height="104"/>
-        <element name="Run" positionX="-63" positionY="27" width="128" height="89"/>
-        <element name="EarnedBadge" positionX="-45" positionY="54" width="128" height="59"/>
     </elements>
 </model>
