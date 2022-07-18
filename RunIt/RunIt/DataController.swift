@@ -48,11 +48,13 @@ class DataController: ObservableObject {
             task.steps = []
             task.runs = []
             task.areStepsOrdered = Bool.random()
+            task.creation = Date.now
             
-            for stepNumber in 1...3 {
+            let stepsLimit = taskNumber == 4 ? 1 : 3
+            for stepNumber in 1...stepsLimit {
                 let step = Step(context: viewContext)
                 step.name = "Step \(stepNumber)"
-                step.length = stepNumber % 2 == 0 ? Int16(stepNumber * 10) : 0
+                step.length = taskNumber == 4 ? 0 : Int16(stepNumber * 10)
                 step.tasks = [task]
                 step.lastStepIn = nil
                 
