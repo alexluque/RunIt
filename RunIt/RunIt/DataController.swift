@@ -53,7 +53,7 @@ class DataController: ObservableObject {
             let stepsLimit = taskNumber == 4 ? 1 : 3
             for stepNumber in 1...stepsLimit {
                 let step = Step(context: viewContext)
-                step.name = "Step \(stepNumber)"
+                step.name = "Step \(taskNumber)-\(stepNumber)"
                 step.length = taskNumber == 4 ? 0 : Int16(stepNumber * 10)
                 step.tasks = [task]
                 step.lastStepIn = nil
