@@ -67,7 +67,7 @@ struct TasksView: View {
             Image(systemName: "plus")
         }
         .sheet(isPresented: $canCreateTask) {
-            TaskView()
+//            TaskView(task: Task(context: dataController.container.viewContext))
         }
     }
     
@@ -111,9 +111,9 @@ struct TasksView: View {
 }
 
 struct TaskHeader: View {
-    let task: Task
+    @ObservedObject var task: Task
     
-    @State var canEditTask = false
+    @State private var canEditTask = false
     
     var body: some View {
         HStack(alignment: .top) {
@@ -141,7 +141,7 @@ struct TaskHeader: View {
 }
 
 struct TaskBody: View {
-    let task: Task
+    @ObservedObject var task: Task
     
     var body: some View {
         HStack {

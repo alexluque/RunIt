@@ -27,6 +27,7 @@
 		FA56BD5128843FB900FECE09 /* BaseTestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56BD5028843FB900FECE09 /* BaseTestClass.swift */; };
 		FA890204287F67510020448C /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA890203287F67510020448C /* TaskView.swift */; };
 		FAB57C04287DCDE600180CF0 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB57C03287DCDE600180CF0 /* DateExtensions.swift */; };
+		FAFCA3F72886FCD6009A8F6B /* StepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFCA3F62886FCD6009A8F6B /* StepsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		FA56BD5028843FB900FECE09 /* BaseTestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTestClass.swift; sourceTree = "<group>"; };
 		FA890203287F67510020448C /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
 		FAB57C03287DCDE600180CF0 /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
+		FAFCA3F62886FCD6009A8F6B /* StepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +172,7 @@
 				FA40976D287787C000ABBBC4 /* ConfigView.swift */,
 				FA409769287786D700ABBBC4 /* HistoryView.swift */,
 				FA3ADFBC28760277009F4815 /* MainView.swift */,
+				FAFCA3F62886FCD6009A8F6B /* StepsView.swift */,
 				FA40976728777F9F00ABBBC4 /* TasksView.swift */,
 				FA890203287F67510020448C /* TaskView.swift */,
 			);
@@ -335,6 +338,7 @@
 				FA40976E287787C000ABBBC4 /* ConfigView.swift in Sources */,
 				FA42AA0428805CC700B4726A /* RunExtensions.swift in Sources */,
 				FAB57C04287DCDE600180CF0 /* DateExtensions.swift in Sources */,
+				FAFCA3F72886FCD6009A8F6B /* StepsView.swift in Sources */,
 				FA3ADFBD28760277009F4815 /* MainView.swift in Sources */,
 				FA40976828777F9F00ABBBC4 /* TasksView.swift in Sources */,
 				FA3ADFBB28760277009F4815 /* RunItApp.swift in Sources */,
