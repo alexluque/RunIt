@@ -5,6 +5,7 @@
 //  Created by Àlex G. Luque on 7/7/22.
 //
 
+import CoreData
 import SwiftUI
 
 struct TasksView: View {
@@ -15,7 +16,6 @@ struct TasksView: View {
     @State var sortAscending = true
     @State var canCreateTask = false
     @State var searchedTaskName = ""
-    @State var canBeDeleted = false
     
     var searchedTasks: [Task] {
         var sortedTasks = tasks.wrappedValue.sorted(by: {
@@ -42,6 +42,17 @@ struct TasksView: View {
         )
     }
     
+    var newTaskButton: some View {
+        Button {
+            canCreateTask.toggle()
+        } label: {
+            Image(systemName: "plus")
+        }
+        .sheet(isPresented: $canCreateTask) {
+            NewTaskView()
+        }
+    }
+    
     var sortingSelector: some View {
         HStack {
             Picker("Sorted by", selection: $sortByName) {
@@ -60,17 +71,6 @@ struct TasksView: View {
         }
     }
     
-    var newTaskButton: some View {
-        Button {
-            canCreateTask.toggle()
-        } label: {
-            Image(systemName: "plus")
-        }
-        .sheet(isPresented: $canCreateTask) {
-//            TaskView(task: Task(context: dataController.container.viewContext))
-        }
-    }
-    
     var body: some View {
         NavigationView {
             VStack {
@@ -86,14 +86,6 @@ struct TasksView: View {
                     ForEach(searchedTasks) { task in
                         Section(header: TaskHeader(task: task)) {
                             TaskBody(task: task)
-                        }
-                    }
-                    .onDelete { _ in
-                        canBeDeleted = true
-                    }
-                    .alert("Do you want to delete the task?", isPresented: $canBeDeleted) {
-                        Button("Delete", role: .destructive) {
-                            
                         }
                     }
                 }
@@ -127,7 +119,7 @@ struct TaskHeader: View {
                 Image(systemName: "square.and.pencil")
             }
             .sheet(isPresented: $canEditTask) {
-                TaskView(task: task)
+                EditTaskView(task: task)
             }
             .padding(.trailing)
             

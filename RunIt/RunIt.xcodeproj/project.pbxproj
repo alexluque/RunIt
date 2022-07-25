@@ -24,6 +24,8 @@
 		FA42AA0628805D8500B4726A /* StepExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA42AA0528805D8500B4726A /* StepExtensions.swift */; };
 		FA4B21502877218300070D6D /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4B214F2877218300070D6D /* DataController.swift */; };
 		FA4B21552877358B00070D6D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4B21542877358B00070D6D /* CloudKit.framework */; };
+		FA503674288EE6BC000A01BC /* EditTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA503673288EE6BC000A01BC /* EditTaskView.swift */; };
+		FA503676288EE6C4000A01BC /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA503675288EE6C4000A01BC /* NewTaskView.swift */; };
 		FA56BD5128843FB900FECE09 /* BaseTestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56BD5028843FB900FECE09 /* BaseTestClass.swift */; };
 		FA890204287F67510020448C /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA890203287F67510020448C /* TaskView.swift */; };
 		FAB57C04287DCDE600180CF0 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB57C03287DCDE600180CF0 /* DateExtensions.swift */; };
@@ -70,6 +72,8 @@
 		FA4B21512877352A00070D6D /* RunIt.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RunIt.entitlements; sourceTree = "<group>"; };
 		FA4B21522877353300070D6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		FA4B21542877358B00070D6D /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		FA503673288EE6BC000A01BC /* EditTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskView.swift; sourceTree = "<group>"; };
+		FA503675288EE6C4000A01BC /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
 		FA56BD5028843FB900FECE09 /* BaseTestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTestClass.swift; sourceTree = "<group>"; };
 		FA890203287F67510020448C /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
 		FAB57C03287DCDE600180CF0 /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
@@ -173,8 +177,8 @@
 				FA409769287786D700ABBBC4 /* HistoryView.swift */,
 				FA3ADFBC28760277009F4815 /* MainView.swift */,
 				FAFCA3F62886FCD6009A8F6B /* StepsView.swift */,
+				FA503672288EE699000A01BC /* Task */,
 				FA40976728777F9F00ABBBC4 /* TasksView.swift */,
-				FA890203287F67510020448C /* TaskView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -185,6 +189,16 @@
 				FA4B21542877358B00070D6D /* CloudKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FA503672288EE699000A01BC /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				FA503673288EE6BC000A01BC /* EditTaskView.swift */,
+				FA503675288EE6C4000A01BC /* NewTaskView.swift */,
+				FA890203287F67510020448C /* TaskView.swift */,
+			);
+			path = Task;
 			sourceTree = "<group>";
 		};
 		FAB57C02287DCDCD00180CF0 /* Extensions */ = {
@@ -332,11 +346,13 @@
 				FA40976A287786D700ABBBC4 /* HistoryView.swift in Sources */,
 				FA42AA0628805D8500B4726A /* StepExtensions.swift in Sources */,
 				FA4B21502877218300070D6D /* DataController.swift in Sources */,
+				FA503676288EE6C4000A01BC /* NewTaskView.swift in Sources */,
 				FA42AA0228805B4900B4726A /* TaskExtensions.swift in Sources */,
 				FA890204287F67510020448C /* TaskView.swift in Sources */,
 				FA40976C2877875300ABBBC4 /* BadgesView.swift in Sources */,
 				FA40976E287787C000ABBBC4 /* ConfigView.swift in Sources */,
 				FA42AA0428805CC700B4726A /* RunExtensions.swift in Sources */,
+				FA503674288EE6BC000A01BC /* EditTaskView.swift in Sources */,
 				FAB57C04287DCDE600180CF0 /* DateExtensions.swift in Sources */,
 				FAFCA3F72886FCD6009A8F6B /* StepsView.swift in Sources */,
 				FA3ADFBD28760277009F4815 /* MainView.swift in Sources */,
