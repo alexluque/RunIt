@@ -12,6 +12,8 @@ struct StepsView: View {
     @Binding var stepsInTask: [Step]
     @State var steps: [Step]
     let fetchedSteps: FetchRequest<Step>
+    let taskName: String
+    let tasks: FetchRequest<Task>
     
     @Environment(\.dismiss) private var dismiss
     
@@ -20,7 +22,12 @@ struct StepsView: View {
     
     @State private var canCreateNewStep = false
     @State private var newStepName = ""
-    @State private var newStepLength = ""
+    @State private var newStepLengthHours = 0
+    @State private var newStepLengtMinutes = 0
+    @State private var newStepLengthSeconds = 0
+    @State private var disposableStep: Step?
+    @State private var stepNotDisposable = false
+    
     @FocusState private var canWriteName: Bool
     
     var sortedStepsInTask: [Step] {
@@ -42,8 +49,9 @@ struct StepsView: View {
         }
     }
     
-    init(stepsInTask: Binding<[Step]>) {
+    init(stepsInTask: Binding<[Step]>, taskName: String) {
         _stepsInTask = stepsInTask
+        self.taskName = taskName
         fetchedSteps = FetchRequest<Step>(
             entity: Step.entity(),
             sortDescriptors: [NSSortDescriptor(keyPath: \Step.name, ascending: true)]
@@ -52,6 +60,11 @@ struct StepsView: View {
         
         _canBeDeleted = State(wrappedValue: false)
         _searchedStepName = State(wrappedValue: "")
+        
+        tasks = FetchRequest<Task>(
+            entity: Task.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \Task.name, ascending: true)]
+        )
     }
     
     var disposableSteps: some View {
@@ -63,32 +76,6 @@ struct StepsView: View {
                     DisposableStep(step: step, sortedStepsInTask: sortedStepsInTask)
                 }
             }
-        }
-    }
-    var newStep: some View {
-        Section(
-            header: HStack {
-                Text("New Step")
-                
-                Spacer()
-                
-                Button("Cancel") {
-                    canCreateNewStep.toggle()
-                }
-            }
-        ) {
-            TextField("Step name", text: $newStepName)
-                .padding(5)
-                .border(newStepName.isEmpty ? Color.red : Color.clear)
-                .focused($canWriteName)
-            
-            TextField("Step length in seconds", text: $newStepLength)
-                .keyboardType(.numberPad)
-            
-            Button("Save") {
-                saveNewStep()
-            }
-            .disabled(newStepName.isEmpty)
         }
     }
     var availableSteps: some View {
@@ -126,35 +113,67 @@ struct StepsView: View {
                     .contentShape(Rectangle())
                 }
             }
-            .onDelete { _ in
+            .onDelete { offsets in
                 canBeDeleted.toggle()
+                
+                for offset in offsets {
+                    disposableStep = searchedSteps[offset]
+                }
             }
-            .alert("Do you want to delete the step?", isPresented: $canBeDeleted) {
+            .alert(
+                "The step will disappear from other tasks that may contain it as well. Are you sure you want to delete the step?",
+                isPresented: $canBeDeleted
+            ) {
                 Button("Delete", role: .destructive) {
-                    /// TODO remove step
-                    /// In order to remove the step we need to check if it is the only existing step in some task,
-                    /// and only remove it if it's not.
+                    stepNotDisposable = deleteStep()
+                    
+                    if !stepNotDisposable {
+                        steps.remove(at: steps.firstIndex(of: disposableStep!)!)
+                    }
                 }
             }
         }
     }
     
     var body: some View {
-        NavigationView {
-            List {
-                disposableSteps
-                
-                if canCreateNewStep {
-                    newStep
-                }                
-                
-                availableSteps
+        GeometryReader { geo in
+            NavigationView {
+                VStack {
+                    HStack(alignment: .center) {
+                        Text(taskName)
+                            .font(.title2)
+                    }
+                    
+                    List {
+                        disposableSteps
+                        
+                        if canCreateNewStep {
+                            NewStep(
+                                canCreateNewStep: $canCreateNewStep,
+                                newStepName: $newStepName,
+                                newStepLengthHours: $newStepLengthHours,
+                                newStepLengtMinutes: $newStepLengtMinutes,
+                                newStepLengthSeconds: $newStepLengthSeconds,
+                                steps: $steps,
+                                geoWidth: geo.size.width
+                            )
+                        }
+                        
+                        availableSteps
+                    }
+                    .listStyle(.insetGrouped)
+                    .searchable(text: $searchedStepName, prompt: "Type the name of the step")
+                }
             }
-            .listStyle(.insetGrouped)
-            .searchable(text: $searchedStepName, prompt: "Type the name of the step")
-        }
-        .onAppear {
-            steps.append(contentsOf: fetchedSteps.wrappedValue.map({ $0 }))
+            .onAppear {
+                steps.append(contentsOf: fetchedSteps.wrappedValue.map({ $0 }))
+            }
+            .alert(
+                "The step could not be deleted because it's the only step in another task.",
+                isPresented: $stepNotDisposable
+            ) {
+                Button("Ok", role: .cancel) {}
+            }
         }
     }
     
@@ -168,27 +187,29 @@ struct StepsView: View {
         }
     }
     
-    private func saveNewStep() {
-        if !steps.contains(where: { $0.stepName == newStepName }) {
-            let step = Step(context: dataController.container.viewContext)
-            
-            step.objectWillChange.send()
-            
-            step.name = newStepName
-            step.length = Int16(newStepLength) ?? 0
-            
-            steps.append(step)
-        }
-        
-        canCreateNewStep.toggle()
-    }
-    
     private func onCreateNewStepClicked() {
         newStepName = ""
-        newStepLength = ""
+        newStepLengthHours = 0
+        newStepLengtMinutes = 0
+        newStepLengthSeconds = 0
         
         canCreateNewStep.toggle()
         canWriteName.toggle()
+    }
+    
+    private func deleteStep() -> Bool {
+        var cantBeDeleted = false
+        for task in tasks.wrappedValue where task.taskSteps.contains(disposableStep!) && task.taskSteps.count == 1 {
+            cantBeDeleted = true
+            break
+        }
+        
+        if cantBeDeleted {
+            return true
+        } else {
+            dataController.container.viewContext.delete(disposableStep!)
+            return false
+        }
     }
 }
 
@@ -216,12 +237,146 @@ struct DisposableStep: View {
     }
 }
 
+struct NewStep: View {
+    @EnvironmentObject var dataController: DataController
+    @FocusState var canWriteName: Bool
+    @Binding var canCreateNewStep: Bool
+    @Binding var newStepName: String
+    @Binding var newStepLengthHours: Int
+    @Binding var newStepLengtMinutes: Int
+    @Binding var newStepLengthSeconds: Int
+    @Binding var steps: [Step]
+    var geoWidth: CGFloat
+    
+    @State private var canPickLength = false
+    
+    var body: some View {
+        Section(
+            header: HStack {
+                Text("New Step")
+                
+                Spacer()
+                
+                Button("Cancel") {
+                    canCreateNewStep.toggle()
+                }
+            }
+        ) {
+            TextField("Step name", text: $newStepName)
+                .padding(5)
+                .border(newStepName.isEmpty ? Color.red : Color.clear)
+                .focused($canWriteName)
+            
+            VStack {
+                Button {
+                    canPickLength.toggle()
+                } label: {
+                    HStack {
+                        Text("\(newStepLengthHours)h")
+                        Text("\(newStepLengtMinutes)m")
+                        Text("\(newStepLengthSeconds)s")
+                        
+                        Spacer()
+                    }
+                }
+                
+                if canPickLength {
+                    HStack(spacing: 0) {
+                        Picker("Step's length in hours", selection: $newStepLengthHours) {
+                            ForEach(0...24, id: \.self) { hour in
+                                Text("\(hour)")
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .overlay(Text(" hrs").padding(.leading, 50))
+                        .frame(width: geoWidth / 3.5)
+                        .clipped()
+                        .compositingGroup()
+                        .onChange(of: newStepLengthHours) { _ in
+                            setMinSeconds()
+                        }
+                        
+                        Picker("Step's length in minutes", selection: $newStepLengtMinutes) {
+                            ForEach(0...60, id: \.self) { minute in
+                                Text("\(minute)")
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .overlay(Text(" min").padding(.leading, 55))
+                        .frame(width: geoWidth / 3.5)
+                        .clipped()
+                        .compositingGroup()
+                        .onChange(of: newStepLengtMinutes) { _ in
+                            setMinSeconds()
+                        }
+                        
+                        Picker("Step's length in seconds", selection: $newStepLengthSeconds) {
+                            let seconds = newStepLengthHours > 0 || newStepLengtMinutes > 0 ? 0...60 : 10...60
+                            ForEach(seconds, id: \.self) { second in
+                                Text("\(second)")
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .overlay(Text(" sec").padding(.leading, 55))
+                        .frame(width: geoWidth / 3.5)
+                        .clipped()
+                        .compositingGroup()
+                        .onChange(of: newStepLengthSeconds) { _ in
+                            setMinSeconds()
+                        }
+                    }
+                }
+                
+            }
+            
+            Button("Add") {
+                saveNewStep()
+            }
+            .disabled(newStepName.isEmpty)
+        }
+    }
+    
+    private func saveNewStep() {
+        if !steps.contains(where: { $0.stepName == newStepName }) {
+            let step = Step(context: dataController.container.viewContext)
+            
+            step.objectWillChange.send()
+            
+            let hours = (newStepLengthHours * 60) * 60
+            let minutes = newStepLengtMinutes * 60
+            step.length = Int16(hours + minutes + newStepLengthSeconds)
+            step.name = newStepName
+            
+            steps.append(step)
+        }
+        
+        canCreateNewStep.toggle()
+    }
+    
+    private func setMinSeconds() {
+        if newStepLengthHours == 0
+            && newStepLengtMinutes == 0
+            && (newStepLengthSeconds > 0 && newStepLengthSeconds < 10) {
+            newStepLengthSeconds = 10
+        }
+    }
+}
+
 struct StepsView_Previews: PreviewProvider {
     static var dataController = DataController.preview
     
     static var previews: some View {
-        StepsView(stepsInTask: .constant(Task.example.taskSteps))
-            .environment(\.managedObjectContext, dataController.container.viewContext)
-            .environmentObject(dataController)
+        StepsView(
+            stepsInTask: .constant(Task.example.taskSteps),
+            taskName: Task.example.taskName
+        )
+        .environment(\.managedObjectContext, dataController.container.viewContext)
+        .environmentObject(dataController)
+    }
+}
+
+extension UIPickerView {
+    open override var intrinsicContentSize: CGSize {
+        return CGSize(width: UIView.noIntrinsicMetric, height: super.intrinsicContentSize.height)
     }
 }
