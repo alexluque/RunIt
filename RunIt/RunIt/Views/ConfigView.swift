@@ -11,9 +11,9 @@ struct ConfigView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Text("Configration View")
+                Text("Configuration View")
             }
-            .navigationTitle("Configration")
+            .navigationTitle("Configuration")
         }
     }
 }
