@@ -103,7 +103,7 @@ struct StepsView: View {
                         Spacer()
                         
                         HStack {
-                            Text(step.length > 0 ? "\(step.length) Sec." : "No length defined")
+                            Text(step.length > 0 ? "\(Int(step.length)) Sec" : "No length defined")
                             
                             Image(systemName: "plus.circle.fill")
                                 .renderingMode(.template)
@@ -120,10 +120,7 @@ struct StepsView: View {
                     disposableStep = searchedSteps[offset]
                 }
             }
-            .alert(
-                "The step will disappear from other tasks that may contain it as well. Are you sure you want to delete the step?",
-                isPresented: $canBeDeleted
-            ) {
+            .alert("Confirm delete step", isPresented: $canBeDeleted) {
                 Button("Delete", role: .destructive) {
                     stepNotDisposable = deleteStep()
                     
@@ -168,10 +165,7 @@ struct StepsView: View {
             .onAppear {
                 steps.append(contentsOf: fetchedSteps.wrappedValue.map({ $0 }))
             }
-            .alert(
-                "The step could not be deleted because it's the only step in another task.",
-                isPresented: $stepNotDisposable
-            ) {
+            .alert("Step could not be deleted", isPresented: $stepNotDisposable) {
                 Button("Ok", role: .cancel) {}
             }
         }
@@ -224,7 +218,7 @@ struct DisposableStep: View {
             Spacer()
             
             HStack {
-                Text(step.length > 0 ? "\(step.length) Sec." : "No length defined")
+                Text(step.length > 0 ? "\(Int(step.length)) Sec" : "No length defined")
                 
                 if sortedStepsInTask.count > 1 {
                     Image(systemName: "minus.circle.fill")
@@ -288,7 +282,7 @@ struct NewStep: View {
                             }
                         }
                         .pickerStyle(.wheel)
-                        .overlay(Text(" hrs").padding(.leading, 50))
+                        .overlay(Text("hrs").padding(.leading, 50))
                         .frame(width: geoWidth / 3.5)
                         .clipped()
                         .compositingGroup()
@@ -302,7 +296,7 @@ struct NewStep: View {
                             }
                         }
                         .pickerStyle(.wheel)
-                        .overlay(Text(" min").padding(.leading, 55))
+                        .overlay(Text("min").padding(.leading, 55))
                         .frame(width: geoWidth / 3.5)
                         .clipped()
                         .compositingGroup()
@@ -317,7 +311,7 @@ struct NewStep: View {
                             }
                         }
                         .pickerStyle(.wheel)
-                        .overlay(Text(" sec").padding(.leading, 55))
+                        .overlay(Text("sec").padding(.leading, 55))
                         .frame(width: geoWidth / 3.5)
                         .clipped()
                         .compositingGroup()

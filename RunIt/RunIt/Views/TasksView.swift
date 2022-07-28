@@ -143,8 +143,8 @@ struct TaskBody: View {
             
             Spacer()
             
-            let length = task.taskSteps.map({ $0.length }).reduce(0, +)
-            Text(length == 0 ? "No length set" : "\(length) Sec.")
+            let length = Int(task.taskSteps.map({ $0.length }).reduce(0, +))
+            Text(length == 0 ? "No length set" : "\(length) Sec")
             
             Spacer()
             

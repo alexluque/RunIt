@@ -26,6 +26,7 @@
 		FA4B21552877358B00070D6D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA4B21542877358B00070D6D /* CloudKit.framework */; };
 		FA503674288EE6BC000A01BC /* EditTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA503673288EE6BC000A01BC /* EditTaskView.swift */; };
 		FA503676288EE6C4000A01BC /* NewTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA503675288EE6C4000A01BC /* NewTaskView.swift */; };
+		FA503678288EF19A000A01BC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA503677288EF19A000A01BC /* Localizable.strings */; };
 		FA56BD5128843FB900FECE09 /* BaseTestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA56BD5028843FB900FECE09 /* BaseTestClass.swift */; };
 		FA890204287F67510020448C /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA890203287F67510020448C /* TaskView.swift */; };
 		FAB57C04287DCDE600180CF0 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB57C03287DCDE600180CF0 /* DateExtensions.swift */; };
@@ -74,6 +75,7 @@
 		FA4B21542877358B00070D6D /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		FA503673288EE6BC000A01BC /* EditTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTaskView.swift; sourceTree = "<group>"; };
 		FA503675288EE6C4000A01BC /* NewTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskView.swift; sourceTree = "<group>"; };
+		FA503677288EF19A000A01BC /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		FA56BD5028843FB900FECE09 /* BaseTestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTestClass.swift; sourceTree = "<group>"; };
 		FA890203287F67510020448C /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
 		FAB57C03287DCDE600180CF0 /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
@@ -134,6 +136,7 @@
 				FA4B214F2877218300070D6D /* DataController.swift */,
 				FAB57C02287DCDCD00180CF0 /* Extensions */,
 				FA4B21522877353300070D6D /* Info.plist */,
+				FA503677288EF19A000A01BC /* Localizable.strings */,
 				FA3ADFE4287602E1009F4815 /* Main.xcdatamodeld */,
 				FA3ADFC02876027B009F4815 /* Preview Content */,
 				FA4B21512877352A00070D6D /* RunIt.entitlements */,
@@ -317,6 +320,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA3ADFC22876027B009F4815 /* Preview Assets.xcassets in Resources */,
+				FA503678288EF19A000A01BC /* Localizable.strings in Resources */,
 				FA3ADFBF2876027B009F4815 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

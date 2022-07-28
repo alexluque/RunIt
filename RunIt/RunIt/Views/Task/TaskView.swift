@@ -32,6 +32,7 @@ struct TaskTopButtons: View {
             }
         }
         .padding()
+        .textCase(.none)
     }
     
     func save() {
@@ -110,7 +111,8 @@ struct TaskSteps: View {
                         
                         Spacer()
                         
-                        Text("\(step.length) Secs.")
+                        Text("\(Int(step.length)) Sec")
+                            .autocapitalization(.none)
                     }
                 }
                 .onDelete { value in

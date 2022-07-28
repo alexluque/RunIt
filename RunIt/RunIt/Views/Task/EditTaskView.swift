@@ -43,6 +43,7 @@ struct EditTaskView: View {
                 dismiss()
             }
         }
+        .textCase(.none)
     }
     
     var body: some View {
