@@ -111,7 +111,7 @@ struct TaskSteps: View {
                         
                         Spacer()
                         
-                        Text("\(Int(step.length)) Sec")
+                        Text(step.length.naturalLength())
                             .autocapitalization(.none)
                     }
                 }

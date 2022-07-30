@@ -103,7 +103,7 @@ struct StepsView: View {
                         Spacer()
                         
                         HStack {
-                            Text(step.length > 0 ? "\(Int(step.length)) Sec" : "No length defined")
+                            Text(step.length.naturalLength())
                             
                             Image(systemName: "plus.circle.fill")
                                 .renderingMode(.template)
@@ -218,7 +218,7 @@ struct DisposableStep: View {
             Spacer()
             
             HStack {
-                Text(step.length > 0 ? "\(Int(step.length)) Sec" : "No length defined")
+                Text(step.length.naturalLength())
                 
                 if sortedStepsInTask.count > 1 {
                     Image(systemName: "minus.circle.fill")
