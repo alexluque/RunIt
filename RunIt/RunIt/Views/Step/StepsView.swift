@@ -21,11 +21,13 @@ struct StepsView: View {
     @State private var searchedStepName: String
     
     @State private var canCreateNewStep = false
+    @State private var canEditStep = false
     @State private var newStepName = ""
-    @State private var newStepLengthHours = 0
-    @State private var newStepLengtMinutes = 0
-    @State private var newStepLengthSeconds = 0
+    @State private var newStepLengthHours: Int16 = 0
+    @State private var newStepLengtMinutes: Int16 = 0
+    @State private var newStepLengthSeconds: Int16 = 0
     @State private var disposableStep: Step?
+    @State private var editableStep: Step?
     @State private var stepNotDisposable = false
     
     @FocusState private var canWriteName: Bool
@@ -112,12 +114,21 @@ struct StepsView: View {
                     }
                     .contentShape(Rectangle())
                 }
-            }
-            .onDelete { offsets in
-                canBeDeleted.toggle()
-                
-                for offset in offsets {
-                    disposableStep = searchedSteps[offset]
+                .swipeActions(edge: .leading) {
+                    Button {
+                        canEditStep.toggle()
+                        editableStep = step
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+                }
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        canBeDeleted.toggle()
+                        disposableStep = step
+                    } label: {
+                        Label("Delete", systemImage: "trash.fill")
+                    }
                 }
             }
             .alert("Confirm delete step", isPresented: $canBeDeleted) {
@@ -154,6 +165,17 @@ struct StepsView: View {
                                 steps: $steps,
                                 geoWidth: geo.size.width
                             )
+                        }
+                        
+                        if canEditStep {
+                            if let step = editableStep {
+                                EditStep(
+                                    canEditStep: $canEditStep,
+                                    steps: $steps,
+                                    geoWidth: geo.size.width,
+                                    step: step
+                                )
+                            }
                         }
                         
                         availableSteps
@@ -231,131 +253,6 @@ struct DisposableStep: View {
     }
 }
 
-struct NewStep: View {
-    @EnvironmentObject var dataController: DataController
-    @FocusState var canWriteName: Bool
-    @Binding var canCreateNewStep: Bool
-    @Binding var newStepName: String
-    @Binding var newStepLengthHours: Int
-    @Binding var newStepLengtMinutes: Int
-    @Binding var newStepLengthSeconds: Int
-    @Binding var steps: [Step]
-    var geoWidth: CGFloat
-    
-    @State private var canPickLength = false
-    
-    var body: some View {
-        Section(
-            header: HStack {
-                Text("New Step")
-                
-                Spacer()
-                
-                Button("Cancel") {
-                    canCreateNewStep.toggle()
-                }
-            }
-        ) {
-            TextField("Step name", text: $newStepName)
-                .padding(5)
-                .border(newStepName.isEmpty ? Color.red : Color.clear)
-                .focused($canWriteName)
-            
-            VStack {
-                Button {
-                    canPickLength.toggle()
-                } label: {
-                    HStack {
-                        Text("\(newStepLengthHours)h")
-                        Text("\(newStepLengtMinutes)m")
-                        Text("\(newStepLengthSeconds)s")
-                        
-                        Spacer()
-                    }
-                }
-                
-                if canPickLength {
-                    HStack(spacing: 0) {
-                        Picker("Step's length in hours", selection: $newStepLengthHours) {
-                            ForEach(0...24, id: \.self) { hour in
-                                Text("\(hour)")
-                            }
-                        }
-                        .pickerStyle(.wheel)
-                        .overlay(Text("hrs").padding(.leading, 50))
-                        .frame(width: geoWidth / 3.5)
-                        .clipped()
-                        .compositingGroup()
-                        .onChange(of: newStepLengthHours) { _ in
-                            setMinSeconds()
-                        }
-                        
-                        Picker("Step's length in minutes", selection: $newStepLengtMinutes) {
-                            ForEach(0...60, id: \.self) { minute in
-                                Text("\(minute)")
-                            }
-                        }
-                        .pickerStyle(.wheel)
-                        .overlay(Text("min").padding(.leading, 55))
-                        .frame(width: geoWidth / 3.5)
-                        .clipped()
-                        .compositingGroup()
-                        .onChange(of: newStepLengtMinutes) { _ in
-                            setMinSeconds()
-                        }
-                        
-                        Picker("Step's length in seconds", selection: $newStepLengthSeconds) {
-                            let seconds = newStepLengthHours > 0 || newStepLengtMinutes > 0 ? 0...60 : 10...60
-                            ForEach(seconds, id: \.self) { second in
-                                Text("\(second)")
-                            }
-                        }
-                        .pickerStyle(.wheel)
-                        .overlay(Text("sec").padding(.leading, 55))
-                        .frame(width: geoWidth / 3.5)
-                        .clipped()
-                        .compositingGroup()
-                        .onChange(of: newStepLengthSeconds) { _ in
-                            setMinSeconds()
-                        }
-                    }
-                }
-                
-            }
-            
-            Button("Add") {
-                saveNewStep()
-            }
-            .disabled(newStepName.isEmpty)
-        }
-    }
-    
-    private func saveNewStep() {
-        if !steps.contains(where: { $0.stepName == newStepName }) {
-            let step = Step(context: dataController.container.viewContext)
-            
-            step.objectWillChange.send()
-            
-            let hours = (newStepLengthHours * 60) * 60
-            let minutes = newStepLengtMinutes * 60
-            step.length = Int16(hours + minutes + newStepLengthSeconds)
-            step.name = newStepName
-            
-            steps.append(step)
-        }
-        
-        canCreateNewStep.toggle()
-    }
-    
-    private func setMinSeconds() {
-        if newStepLengthHours == 0
-            && newStepLengtMinutes == 0
-            && (newStepLengthSeconds > 0 && newStepLengthSeconds < 10) {
-            newStepLengthSeconds = 10
-        }
-    }
-}
-
 struct StepsView_Previews: PreviewProvider {
     static var dataController = DataController.preview
     
@@ -366,11 +263,5 @@ struct StepsView_Previews: PreviewProvider {
         )
         .environment(\.managedObjectContext, dataController.container.viewContext)
         .environmentObject(dataController)
-    }
-}
-
-extension UIPickerView {
-    open override var intrinsicContentSize: CGSize {
-        return CGSize(width: UIView.noIntrinsicMetric, height: super.intrinsicContentSize.height)
     }
 }
