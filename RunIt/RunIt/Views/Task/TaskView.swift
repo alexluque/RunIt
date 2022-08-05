@@ -23,6 +23,12 @@ struct TaskTopButtons: View {
                 dismiss()
             }
             
+            if areStepsOrdered {
+                Spacer()
+                
+                EditButton()
+            }
+            
             Spacer()
             
             if !name.isEmpty && steps.count > 0 {
@@ -47,9 +53,14 @@ struct TaskTopButtons: View {
     
     private func saveTask(_ task: Task) {
         task.objectWillChange.send()
+                
+        task.steps = NSSet()
+        for step in steps {
+            // The for loop allow us to keep the order of steps stablished by the user
+            task.addToSteps(step)
+        }
         
         task.name = name
-        task.steps = NSSet(array: steps)
         task.length = task.taskSteps.map({ $0.length }).reduce(0, +)
         task.creation = task.creation == nil ? Date.now : task.creationDate
         task.areStepsOrdered = areStepsOrdered
@@ -61,12 +72,18 @@ struct TaskBasicSettings: View {
     @Binding var areStepsOrdered: Bool
     
     var body: some View {
-        Section(header: Text("Basic settings")) {
+        Section {
             TextField("Task name", text: $name)
                 .padding(5)
                 .border(name.isEmpty ? Color.red : Color.clear)
             
             Toggle("Should run steps in order?", isOn: $areStepsOrdered)
+        } header: {
+            Text("Basic settings")
+        } footer: {
+            if areStepsOrdered {
+                Text("Steps order tip")
+            }
         }
     }
 }
@@ -117,6 +134,9 @@ struct TaskSteps: View {
                 }
                 .onDelete { value in
                     steps.remove(atOffsets: value)
+                }
+                .onMove { source, destination in
+                    steps.move(fromOffsets: source, toOffset: destination)
                 }
             }
         }
